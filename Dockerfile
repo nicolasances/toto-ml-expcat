@@ -16,5 +16,7 @@ COPY . .
 # Expose the port that Gunicorn will listen on
 EXPOSE 8080
 
+ENV PYTHONUNBUFFERED=TRUE
+
 # Command to run the application using Gunicorn
-CMD ["gunicorn", "-w", "2", "--bind", "0.0.0.0:8080", "app:app", "--enable-stdio-inheritance", "--timeout", "3600"]
+CMD gunicorn --bind 0.0.0.0:8080 app:app --enable-stdio-inheritance --timeout 3600 --workers=2
