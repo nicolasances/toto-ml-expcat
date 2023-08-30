@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8080
 
 # Command to run the application using Gunicorn
-CMD ["gunicorn", "-w", "4", "--bind", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "-w", "2", "--bind", "0.0.0.0:8080", "app:app", "--enable-stdio-inheritance", "--timeout", "3600"]
