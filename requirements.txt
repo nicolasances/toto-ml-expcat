@@ -27,6 +27,7 @@ fonttools==4.34.4
 google-auth==2.10.0
 google-auth-oauthlib==0.5.2
 gspread==5.4.0
+gunicorn==21.2.0
 idna==3.3
 inflection==0.5.1
 investpy==1.0.8
