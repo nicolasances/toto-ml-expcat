@@ -7,7 +7,7 @@ CORS(app, origins=["http://localhost:3000", "https://toto-reactjs-expenses-6lv62
 
 @app.route('/predict', methods=['GET'])
 def predict():
-    return expcat.predict(request.args.get("description"))
+    return expcat.predict(request.args.get("description"), request.args.get("email"))
 
 if __name__ == '__main__':
     app.run()
