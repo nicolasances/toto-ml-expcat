@@ -7,10 +7,12 @@ CORS(app, origins=["http://localhost:3000", "https://toto-reactjs-expenses-6lv62
 
 @app.route('/', methods=['GET'])
 def smoke():
+    print("GET /")
     return {"api": "expcat", "running": True}
 
 @app.route('/predict', methods=['GET'])
 def predict():
+    print("GET /predict")
     return expcat.predict(request.args.get("description"), request.args.get("email"))
 
 if __name__ == '__main__':
