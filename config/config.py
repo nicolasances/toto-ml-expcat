@@ -26,3 +26,6 @@ class ExpcatConfig(TotoConfig):
         for model in self.loaded_models: 
             if model.user == user: 
                 return model
+            
+    def reload_models(self): 
+        self.loaded_models = ModelStore().download_all()

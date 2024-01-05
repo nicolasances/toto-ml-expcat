@@ -126,6 +126,9 @@ class ModelExpcat:
                 "test_accuracy": accuracy
             }
         
+        # Reload all the models
+        self.config.reload_models()
+        
         # Return the data
         return {
             "model": "expcat", 
