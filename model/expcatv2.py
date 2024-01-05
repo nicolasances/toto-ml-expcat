@@ -23,20 +23,25 @@ class ModelExpcat:
         self.config: ExpcatConfig = exec_context.config
         
     def infer(self, user: str, desc: str):
-        
-        self.logger.log(self.cid, f"Inference started: user [{user}], category [{desc}]")
+        """Infers the category of an expense given its description
+
+        Args:
+            user (str): the user email
+            desc (str): the description of the expense
+
+        Returns:
+            dict: a dictionnary with one entry: the predicted category of the expense
+        """
+        self.logger.log(self.cid, f"Inference started: user [{user}], expense description [{desc}]")
         
         # Load the vocabulary
         loaded_model = self.config.get_model(user)
         model = loaded_model.model
         vocab = loaded_model.vocab
         
-        self.logger.log(self.cid, f"Model and vocabulary loaded for user [{user}].")
-        
         # Feature Engineering
-        tokens = tokenize_description(desc, self.punctuation_symbols, self.stemmer)
-        split_tokens = tokens.split()
-        embedding = custom_encode(split_tokens, vocab)
+        tokens = tokenize_description(desc, self.punctuation_symbols, self.stemmer).split()
+        embedding = custom_encode(tokens, vocab)
         
         # Infer
         prediction = model.predict([embedding])
@@ -44,7 +49,35 @@ class ModelExpcat:
         self.logger.log(self.cid, f"Prediction: {prediction}")
         
         return {"category": prediction[0]}
+    
+    def bulk_infer(self, user: str, descriptions: list): 
+        """Bulk inference of the category of multiple expenses. 
+
+        Args:
+            user (str): the user email
+            descriptions (list): a list of the description of each expense for which the category needs to be predicted
+
+        Returns:
+            dict: a dict with one entry: "categories", which value is a list of predicted categories (str)
+        """
+        self.logger.log(self.cid, f"Batch Inference started: user [{user}], number of expenses to categorize: [{len(descriptions)}]")
         
+        # Load the vocabulary
+        loaded_model = self.config.get_model(user)
+        model = loaded_model.model
+        vocab = loaded_model.vocab
+        
+        # Feature Engineering
+        tokens = [tokenize_description(desc, self.punctuation_symbols, self.stemmer).split() for desc in descriptions]
+        embeddings = [custom_encode(t, vocab) for t in tokens]
+        
+        # Infer 
+        prediction = model.predict(embeddings)
+        
+        self.logger.log(self.cid, f"Categories predicted.")
+        
+        return {"categories": prediction.tolist()}
+    
 
     def train(self):
         """Trains the model on the latest data
