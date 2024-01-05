@@ -1,6 +1,12 @@
-from flask import Flask, jsonify, request
-from model import expcat
+from flask import Flask, request
+#from model import expcat
 from flask_cors import CORS
+from config.config import ExpcatConfig
+from dlg.infer import infer_category
+from dlg.train import train_models
+
+# Load the config
+ExpcatConfig()
 
 app = Flask(__name__)
 CORS(app, origins=["*"])
@@ -9,9 +15,14 @@ CORS(app, origins=["*"])
 def smoke():
     return {"api": "expcat", "running": True}
 
-# @app.route('/predict', methods=['GET'])
-# def predict():
-#     return expcat.predict(request.args.get("description"), request.args.get("email"))
+@app.route("/train", methods=["POST"])
+def train(): 
+    return train_models(request)
+
+@app.route('/predict', methods=['GET'])
+def predict():
+    return infer_category(request)
 
 if __name__ == '__main__':
     app.run()
+    
